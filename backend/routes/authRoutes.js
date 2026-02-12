@@ -2,7 +2,7 @@ const express = require('express');
 const { protect } = require('../middleware/authMiddleware');
 
 const { registerUser, loginUser, getUserInfo } = require('../controllers/authController');
-const upload = require('../middleware/UploadMiddleware');
+const { upload, uploadErrorHandler } = require('../middleware/UploadMiddleware');
 
 const router = express.Router();
 
@@ -21,6 +21,13 @@ router.options('/upload-image', (req, res) => {
 
 router.post("/upload-image", upload.single("image"), (req, res) => {
     try {
+        console.log("Upload file received:", req.file);
+        console.log("Cloudinary config:", {
+            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+            api_key: process.env.CLOUDINARY_API_KEY ? "***" : "MISSING",
+            api_secret: process.env.CLOUDINARY_API_SECRET ? "***" : "MISSING"
+        });
+
         if (!req.file) {
             return res.status(400).json({ message: "No file Uploaded" });
         }
@@ -29,9 +36,13 @@ router.post("/upload-image", upload.single("image"), (req, res) => {
         const imageUrl = req.file.path;
         res.status(200).json({ imageUrl });
     } catch (error) {
-        console.error("Upload error:", error);
-        res.status(500).json({ message: "Error uploading image", error: error.message });
+        console.error("Upload error:", error.message, error.stack);
+        res.status(500).json({ 
+            message: "Error uploading image", 
+            error: error.message,
+            details: error.stack
+        });
     }
-});
+}, uploadErrorHandler);
 
 module.exports = router;

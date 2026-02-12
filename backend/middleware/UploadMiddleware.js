@@ -9,6 +9,12 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+console.log("Cloudinary config loaded:", {
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || "MISSING",
+    api_key: process.env.CLOUDINARY_API_KEY ? "set" : "MISSING",
+    api_secret: process.env.CLOUDINARY_API_SECRET ? "set" : "MISSING"
+});
+
 // Configure Cloudinary storage
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
@@ -31,4 +37,16 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-module.exports = upload;
+// Error handler for multer
+const uploadErrorHandler = (err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        console.error("Multer error:", err.message);
+        return res.status(400).json({ message: `Upload error: ${err.message}` });
+    } else if (err) {
+        console.error("Upload error:", err.message);
+        return res.status(400).json({ message: `Upload error: ${err.message}` });
+    }
+    next();
+};
+
+module.exports = { upload, uploadErrorHandler };
