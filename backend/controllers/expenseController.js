@@ -74,11 +74,17 @@ exports.downloadExpenseExcel = async ( req, res ) =>{
 
         const wb = xlsx.utils.book_new();
         const ws = xlsx.utils.json_to_sheet(data);
-        xlsx.utils.book_append_sheet(wb, ws, "Income")
-        xlsx.writeFile(wb, "expense_details.xlsx");
-        res.download("expense_details.xlsx")
+        xlsx.utils.book_append_sheet(wb, ws, "Expense")
+        
+        // Write directly to response stream instead of disk
+        res.setHeader('Content-Disposition', 'attachment; filename="expense_details.xlsx"');
+        res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        
+        const buffer = xlsx.write(wb, { bookType: 'xlsx', type: 'buffer' });
+        res.send(buffer);
 
     }catch(error){
-        res.status(500).json({ message : "Server Error" })
+        console.error("Download error:", error);
+        res.status(500).json({ message : "Server Error", error: error.message })
     }
 }
