@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:8000";
+export const BASE_URL = "https://expense-tracker-puce-rho.vercel.app";
 
 // utils/apiPaths.js
 

@@ -11,6 +11,7 @@ const uploadImage = async (imageFile)=>{
             headers: {
                 'Content-Type': 'multipart/form-data', // Set header for file upload            
             },
+            timeout: 60000, // 60 seconds for file upload
         });
         return response.data // Return response data
     }catch(error){
