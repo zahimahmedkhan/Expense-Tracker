@@ -12,13 +12,18 @@ router.get('/getUser', protect, getUserInfo);
 
 
 router.post("/upload-image", upload.single("image"), (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: "No file Uploaded" });
-    }
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file Uploaded" });
+        }
 
-    // Cloudinary already returns the secure URL in req.file.path
-    const imageUrl = req.file.path;
-    res.status(200).json({ imageUrl });
+        // Cloudinary already returns the secure URL in req.file.path
+        const imageUrl = req.file.path;
+        res.status(200).json({ imageUrl });
+    } catch (error) {
+        console.error("Upload error:", error);
+        res.status(500).json({ message: "Error uploading image", error: error.message });
+    }
 });
 
 module.exports = router;
