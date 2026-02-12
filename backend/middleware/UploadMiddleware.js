@@ -1,27 +1,34 @@
-const mutler = require("multer")
+const multer = require("multer");
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require("cloudinary").v2;
 
-//configure storage 
+// Configure Cloudinary
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-const storage = mutler.diskStorage({
-    destination:(req, file, cb) =>{
-        cb(null,"uploads/")
+// Configure Cloudinary storage
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: "expense-tracker/profiles",
+        resource_type: "auto",
+        allowed_formats: ["jpg", "jpeg", "png"],
     },
-    filename: (req, file, cb) =>{
-        cb(null, `${Date.now()}-${file.originalname}`);
-    }
-})
+});
 
-//file filter
-
-const fileFilter = (req, file, cb) =>{
-    const allowedTypes = ['image/jpeg','image/png','image/jpg'];
-    if(allowedTypes.includes(file.mimetype)){
-        cb(null,true)
+// File filter
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
     } else {
-        cb(new Error('only .jpeg .jpg and png formate are allowed'),false);
+        cb(new Error("only .jpeg .jpg and png formate are allowed"), false);
     }
 };
 
-const upload = mutler({storage,fileFilter});
+const upload = multer({ storage, fileFilter });
 
 module.exports = upload;
