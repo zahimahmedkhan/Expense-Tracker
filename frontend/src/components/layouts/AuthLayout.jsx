@@ -4,8 +4,8 @@ import { LuTrendingUpDown } from "react-icons/lu";
 
 const Authlayout = ({ children }) => {
   return (
-    <div className="flex">
-      <div className="w-screen h-screen md:w-[60vw] px-12 pt-8 pb-12">
+    <div className="flex flex-col md:flex-row">
+      <div className="w-full h-screen md:w-[60vw] px-6 md:px-12 pt-8 pb-12">
         <h2 className="text-lg font-medium text-black">Expenly</h2>
         {children}
       </div>

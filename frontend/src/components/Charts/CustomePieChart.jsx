@@ -20,16 +20,16 @@ const CustomePieChart = ({
 }) => {
     return <ResponsiveContainer width="100%" height={300}>
     <PieChart>
-        <Pie 
-            data={data}
-            dataKey="amount"
-            nameKey="name"
-            cx="50%"
-            cy="50%"
-            outerRadius={130}
-            innerRadius={100}
-            labelLine={false}
-        >
+      <Pie 
+        data={data}
+        dataKey="amount"
+        nameKey="name"
+        cx="50%"
+        cy="50%"
+        outerRadius="80%"
+        innerRadius="60%"
+        labelLine={false}
+      >
           {data?.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}

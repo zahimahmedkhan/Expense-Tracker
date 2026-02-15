@@ -100,7 +100,7 @@ const SignUp = () => {
               type="text"
             />
 
-            <div className="col-span-2">
+            <div className="md:col-span-2">
               <Input
                 value={password}
                 onChange={({ target }) => setPassword(target.value)}
